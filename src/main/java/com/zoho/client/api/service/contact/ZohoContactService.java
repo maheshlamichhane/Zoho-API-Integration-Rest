@@ -25,4 +25,5 @@ public interface ZohoContactService {
 
     public Object emailStatement(String accessToken, String organizationId, String contact_id, EmailStatement emailStatement);
 
+    public Object getStatementMailContent(String accessToken, String organizationId, String contact_id);
 }

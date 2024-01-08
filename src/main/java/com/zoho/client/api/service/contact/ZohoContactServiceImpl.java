@@ -162,6 +162,17 @@ public class ZohoContactServiceImpl implements ZohoContactService {
         return responseEntity.getBody();
     }
 
+    @Override
+    public Object getStatementMailContent(String accessToken, String organizationId, String contact_id) {
+        HttpHeaders headers = ZohoUtilityProvider.getHttpHeaders(accessToken);
+        Map<String,String> queryParams = new HashMap<>();
+        queryParams.put("organization_id",organizationId);
+        String url = ZohoUtilityProvider.buildUrlWithQueryParams(resourceServerBaseUrl+"/contacts/"+contact_id+"/statements/email",queryParams);
+        HttpEntity<Object> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<Object> responseEntity = restTemplateHandler.performHttpRequest(url,HttpMethod.GET,requestEntity);
+        return responseEntity.getBody();
+    }
+
 
     // Validating request data
     private void validateListContactInput(HttpServletRequest request){

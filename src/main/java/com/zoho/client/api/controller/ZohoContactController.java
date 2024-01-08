@@ -79,6 +79,12 @@ public class ZohoContactController {
         return zohoContactService.emailStatement(request.getHeader("Authorization").substring(16),organizationId,contactId,emailStatement);
     }
 
+    @GetMapping("/contacts/{contact_id}/statements/email")
+    public Object getStatementMailContent(HttpServletRequest request, @RequestParam("organization_id") String organizationId, @PathVariable("contact_id") String contactId){
+        return zohoContactService.getStatementMailContent(request.getHeader("Authorization").substring(16),organizationId,contactId);
+    }
+
+
 
 
 
