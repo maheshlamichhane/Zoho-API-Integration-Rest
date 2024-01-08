@@ -1,5 +1,6 @@
 package com.zoho.client.api.service.contact;
 
+import com.zoho.client.api.dto.contact.BillingAddress;
 import com.zoho.client.api.dto.contact.CreateContactRequest;
 import com.zoho.client.api.dto.contact.EmailStatement;
 import com.zoho.client.api.dto.contact.EnablePortalAccessRequest;
@@ -31,4 +32,6 @@ public interface ZohoContactService {
     public Object emailContact(String accessToken, String organizationId, String contact_id, String[] toMailIds, String subject, String body, MultipartFile file);
 
     public Object listComments(String accessToken, String organizationId, String contact_id);
+
+    public Object addAdditionalAddress(String accessToken, String organizationId, String contact_id, BillingAddress billingAddress);
 }

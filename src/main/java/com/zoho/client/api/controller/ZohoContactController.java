@@ -1,5 +1,6 @@
 package com.zoho.client.api.controller;
 
+import com.zoho.client.api.dto.contact.BillingAddress;
 import com.zoho.client.api.dto.contact.CreateContactRequest;
 import com.zoho.client.api.dto.contact.EmailStatement;
 import com.zoho.client.api.dto.contact.EnablePortalAccessRequest;
@@ -100,4 +101,10 @@ public class ZohoContactController {
     public Object listComments(HttpServletRequest request,@PathVariable("contact_id") String contactId,@RequestParam("organization_id") String organizationId){
         return zohoContactService.listComments(request.getHeader("Authorization").substring(16),organizationId,contactId);
     }
+
+    @PostMapping("/contacts/{contact_id}/address")
+    public ResponseEntity<Object> addAdditionalAddress(HttpServletRequest request, @RequestParam("organization_id") String organizationId, @PathVariable("contact_id") String contactId, @Valid @RequestBody BillingAddress billingAddress){
+        return ResponseEntity.status(HttpStatus.CREATED).body(zohoContactService.addAdditionalAddress(request.getHeader("Authorization").substring(16),organizationId,contactId,billingAddress));
+    }
+
 }
