@@ -212,6 +212,7 @@ public class ZohoContactServiceImpl implements ZohoContactService {
 
     @Override
     public Object addAdditionalAddress(String accessToken, String organizationId, String contact_id, BillingAddress billingAddress) {
+
         HttpHeaders headers = ZohoUtilityProvider.getHttpHeaders(accessToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
         Map<String,String> queryParams = new HashMap<>();
@@ -220,6 +221,17 @@ public class ZohoContactServiceImpl implements ZohoContactService {
         String jsonObj = ZohoUtilityProvider.convertToJsonWithNonNullFields(billingAddress);
         HttpEntity<Object> requestEntity = new HttpEntity<>(jsonObj,headers);
         ResponseEntity<Object> responseEntity = restTemplateHandler.performHttpRequest(url,HttpMethod.POST,requestEntity);
+        return responseEntity.getBody();
+    }
+
+    @Override
+    public Object getContactAddress(String accessToken, String organizationId, String contact_id) {
+        HttpHeaders headers = ZohoUtilityProvider.getHttpHeaders(accessToken);
+        Map<String,String> queryParams = new HashMap<>();
+        queryParams.put("organization_id",organizationId);
+        String url = ZohoUtilityProvider.buildUrlWithQueryParams(resourceServerBaseUrl+"/contacts/"+contact_id+"/address",queryParams);
+        HttpEntity<Object> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<Object> responseEntity = restTemplateHandler.performHttpRequest(url,HttpMethod.GET,requestEntity);
         return responseEntity.getBody();
     }
 

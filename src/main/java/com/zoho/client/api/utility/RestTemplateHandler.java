@@ -1,13 +1,19 @@
 package com.zoho.client.api.utility;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class RestTemplateHandler {
+
+    @Value("${zoho.resource-server.base-url}")
+    private String resourceServerBaseUrl;
 
     private final RestTemplate restTemplate;
 

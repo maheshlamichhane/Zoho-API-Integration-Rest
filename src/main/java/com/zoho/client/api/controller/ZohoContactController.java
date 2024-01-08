@@ -107,4 +107,9 @@ public class ZohoContactController {
         return ResponseEntity.status(HttpStatus.CREATED).body(zohoContactService.addAdditionalAddress(request.getHeader("Authorization").substring(16),organizationId,contactId,billingAddress));
     }
 
+    @GetMapping("/contacts/{contact_id}/address")
+    public Object getContactAddress(HttpServletRequest request, @RequestParam("organization_id") String organizationId, @PathVariable("contact_id") String contactId){
+        return zohoContactService.getContactAddress(request.getHeader("Authorization").substring(16),organizationId,contactId);
+    }
+
 }

@@ -34,4 +34,6 @@ public interface ZohoContactService {
     public Object listComments(String accessToken, String organizationId, String contact_id);
 
     public Object addAdditionalAddress(String accessToken, String organizationId, String contact_id, BillingAddress billingAddress);
+
+    public Object getContactAddress(String accessToken, String organizationId, String contact_id);
 }
