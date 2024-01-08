@@ -1,9 +1,6 @@
 package com.zoho.client.api.controller;
 
-import com.zoho.client.api.dto.contact.BillingAddress;
-import com.zoho.client.api.dto.contact.CreateContactRequest;
-import com.zoho.client.api.dto.contact.EmailStatement;
-import com.zoho.client.api.dto.contact.EnablePortalAccessRequest;
+import com.zoho.client.api.dto.contact.*;
 import com.zoho.client.api.service.contact.ZohoContactService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -103,13 +100,18 @@ public class ZohoContactController {
     }
 
     @PostMapping("/contacts/{contact_id}/address")
-    public ResponseEntity<Object> addAdditionalAddress(HttpServletRequest request, @RequestParam("organization_id") String organizationId, @PathVariable("contact_id") String contactId, @Valid @RequestBody BillingAddress billingAddress){
-        return ResponseEntity.status(HttpStatus.CREATED).body(zohoContactService.addAdditionalAddress(request.getHeader("Authorization").substring(16),organizationId,contactId,billingAddress));
+    public ResponseEntity<Object> addAdditionalAddress(HttpServletRequest request, @RequestParam("organization_id") String organizationId, @PathVariable("contact_id") String contactId, @Valid @RequestBody AdditionalAddress additionalAddress){
+        return ResponseEntity.status(HttpStatus.CREATED).body(zohoContactService.addAdditionalAddress(request.getHeader("Authorization").substring(16),organizationId,contactId,additionalAddress));
     }
 
     @GetMapping("/contacts/{contact_id}/address")
     public Object getContactAddress(HttpServletRequest request, @RequestParam("organization_id") String organizationId, @PathVariable("contact_id") String contactId){
         return zohoContactService.getContactAddress(request.getHeader("Authorization").substring(16),organizationId,contactId);
+    }
+
+    @PutMapping("/contacts/{contact_id}/address/{address_id}")
+    public Object editAdditionalAddresses(HttpServletRequest request, @RequestParam("organization_id") String organizationId, @PathVariable("contact_id") String contactId,@PathVariable("address_id") String addressId, @Valid @RequestBody AdditionalAddress additionalAddress){
+        return zohoContactService.editAdditionalAddress(request.getHeader("Authorization").substring(16),organizationId,contactId,addressId,additionalAddress);
     }
 
 }

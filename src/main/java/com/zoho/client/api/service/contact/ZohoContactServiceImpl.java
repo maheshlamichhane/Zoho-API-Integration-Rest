@@ -1,9 +1,6 @@
 package com.zoho.client.api.service.contact;
 
-import com.zoho.client.api.dto.contact.BillingAddress;
-import com.zoho.client.api.dto.contact.CreateContactRequest;
-import com.zoho.client.api.dto.contact.EmailStatement;
-import com.zoho.client.api.dto.contact.EnablePortalAccessRequest;
+import com.zoho.client.api.dto.contact.*;
 import com.zoho.client.api.exception.ZohoException;
 import com.zoho.client.api.utility.RestTemplateHandler;
 import com.zoho.client.api.utility.ZohoUtilityProvider;
@@ -211,14 +208,14 @@ public class ZohoContactServiceImpl implements ZohoContactService {
     }
 
     @Override
-    public Object addAdditionalAddress(String accessToken, String organizationId, String contact_id, BillingAddress billingAddress) {
+    public Object addAdditionalAddress(String accessToken, String organizationId, String contact_id, AdditionalAddress additionalAddress) {
 
         HttpHeaders headers = ZohoUtilityProvider.getHttpHeaders(accessToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
         Map<String,String> queryParams = new HashMap<>();
         queryParams.put("organization_id",organizationId);
         String url = ZohoUtilityProvider.buildUrlWithQueryParams(resourceServerBaseUrl+"/contacts/"+contact_id+"/address",queryParams);
-        String jsonObj = ZohoUtilityProvider.convertToJsonWithNonNullFields(billingAddress);
+        String jsonObj = ZohoUtilityProvider.convertToJsonWithNonNullFields(additionalAddress);
         HttpEntity<Object> requestEntity = new HttpEntity<>(jsonObj,headers);
         ResponseEntity<Object> responseEntity = restTemplateHandler.performHttpRequest(url,HttpMethod.POST,requestEntity);
         return responseEntity.getBody();
@@ -232,6 +229,18 @@ public class ZohoContactServiceImpl implements ZohoContactService {
         String url = ZohoUtilityProvider.buildUrlWithQueryParams(resourceServerBaseUrl+"/contacts/"+contact_id+"/address",queryParams);
         HttpEntity<Object> requestEntity = new HttpEntity<>(headers);
         ResponseEntity<Object> responseEntity = restTemplateHandler.performHttpRequest(url,HttpMethod.GET,requestEntity);
+        return responseEntity.getBody();
+    }
+
+    @Override
+    public Object editAdditionalAddress(String accessToken, String organizationId, String contactId,String addressId, AdditionalAddress additionalAddress) {
+        HttpHeaders headers = ZohoUtilityProvider.getHttpHeaders(accessToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        Map<String,String> queryParams = new HashMap<>();
+        queryParams.put("organization_id",organizationId);
+        String url = ZohoUtilityProvider.buildUrlWithQueryParams(resourceServerBaseUrl+"/contacts/"+contactId+"/address/"+addressId,queryParams);
+        HttpEntity<Object> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<Object> responseEntity = restTemplateHandler.performHttpRequest(url,HttpMethod.PUT,requestEntity);
         return responseEntity.getBody();
     }
 

@@ -1,9 +1,6 @@
 package com.zoho.client.api.service.contact;
 
-import com.zoho.client.api.dto.contact.BillingAddress;
-import com.zoho.client.api.dto.contact.CreateContactRequest;
-import com.zoho.client.api.dto.contact.EmailStatement;
-import com.zoho.client.api.dto.contact.EnablePortalAccessRequest;
+import com.zoho.client.api.dto.contact.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +30,9 @@ public interface ZohoContactService {
 
     public Object listComments(String accessToken, String organizationId, String contact_id);
 
-    public Object addAdditionalAddress(String accessToken, String organizationId, String contact_id, BillingAddress billingAddress);
+    public Object addAdditionalAddress(String accessToken, String organizationId, String contact_id, AdditionalAddress additionalAddress);
 
     public Object getContactAddress(String accessToken, String organizationId, String contact_id);
+
+    public Object editAdditionalAddress(String accessToken, String organizationId, String contact_id,String addressId,AdditionalAddress additionalAddress);
 }
