@@ -1,6 +1,7 @@
 package com.zoho.client.api.service.contact;
 
 import com.zoho.client.api.dto.contact.CreateContactRequest;
+import com.zoho.client.api.dto.contact.EmailStatement;
 import com.zoho.client.api.dto.contact.EnablePortalAccessRequest;
 import com.zoho.client.api.exception.ZohoException;
 import com.zoho.client.api.utility.RestTemplateHandler;
@@ -144,6 +145,19 @@ public class ZohoContactServiceImpl implements ZohoContactService {
         queryParams.put("organization_id",organizationId);
         String url = ZohoUtilityProvider.buildUrlWithQueryParams(resourceServerBaseUrl+"/contacts/"+contact_id+"/paymentreminder/disable",queryParams);
         HttpEntity<Object> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<Object> responseEntity = restTemplateHandler.performHttpRequest(url,HttpMethod.POST,requestEntity);
+        return responseEntity.getBody();
+    }
+
+    @Override
+    public Object emailStatement(String accessToken, String organizationId, String contact_id, EmailStatement emailStatement) {
+        HttpHeaders headers = ZohoUtilityProvider.getHttpHeaders(accessToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        Map<String,String> queryParams = new HashMap<>();
+        queryParams.put("organization_id",organizationId);
+        String url = ZohoUtilityProvider.buildUrlWithQueryParams(resourceServerBaseUrl+"/contacts/"+contact_id+"/statements/email",queryParams);
+        String jsonObj = ZohoUtilityProvider.convertToJsonWithNonNullFields(emailStatement);
+        HttpEntity<Object> requestEntity = new HttpEntity<>(jsonObj,headers);
         ResponseEntity<Object> responseEntity = restTemplateHandler.performHttpRequest(url,HttpMethod.POST,requestEntity);
         return responseEntity.getBody();
     }

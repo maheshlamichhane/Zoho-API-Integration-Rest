@@ -1,6 +1,7 @@
 package com.zoho.client.api.service.contact;
 
 import com.zoho.client.api.dto.contact.CreateContactRequest;
+import com.zoho.client.api.dto.contact.EmailStatement;
 import com.zoho.client.api.dto.contact.EnablePortalAccessRequest;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,5 +22,7 @@ public interface ZohoContactService {
 
     public Object enablePaymentReminders(String accessToken, String organizationId, String contact_id);
     public Object disablePaymentReminders(String accessToken, String organizationId, String contact_id);
+
+    public Object emailStatement(String accessToken, String organizationId, String contact_id, EmailStatement emailStatement);
 
 }

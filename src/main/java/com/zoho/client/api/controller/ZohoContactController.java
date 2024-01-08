@@ -1,6 +1,7 @@
 package com.zoho.client.api.controller;
 
 import com.zoho.client.api.dto.contact.CreateContactRequest;
+import com.zoho.client.api.dto.contact.EmailStatement;
 import com.zoho.client.api.dto.contact.EnablePortalAccessRequest;
 import com.zoho.client.api.service.contact.ZohoContactService;
 import org.springframework.http.HttpStatus;
@@ -72,6 +73,12 @@ public class ZohoContactController {
     public Object disablePaymentReminders(HttpServletRequest request, @RequestParam("organization_id") String organizationId, @PathVariable("contact_id") String contactId){
         return zohoContactService.disablePaymentReminders(request.getHeader("Authorization").substring(16),organizationId,contactId);
     }
+
+    @PostMapping("/contacts/{contact_id}/statements/email")
+    public Object emailStatement(HttpServletRequest request, @RequestParam("organization_id") String organizationId, @PathVariable("contact_id") String contactId, @Valid @RequestBody EmailStatement emailStatement){
+        return zohoContactService.emailStatement(request.getHeader("Authorization").substring(16),organizationId,contactId,emailStatement);
+    }
+
 
 
 
