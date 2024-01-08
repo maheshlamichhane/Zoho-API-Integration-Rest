@@ -113,5 +113,25 @@ public class ZohoContactController {
     public Object editAdditionalAddresses(HttpServletRequest request, @RequestParam("organization_id") String organizationId, @PathVariable("contact_id") String contactId,@PathVariable("address_id") String addressId, @Valid @RequestBody AdditionalAddress additionalAddress){
         return zohoContactService.editAdditionalAddress(request.getHeader("Authorization").substring(16),organizationId,contactId,addressId,additionalAddress);
     }
+    @DeleteMapping("/contacts/{contact_id}/address/{address_id}")
+    public Object deleteAdditionalAddresses(HttpServletRequest request, @RequestParam("organization_id") String organizationId, @PathVariable("contact_id") String contactId,@PathVariable("address_id") String addressId){
+        return zohoContactService.deleteAdditionalAddress(request.getHeader("Authorization").substring(16),organizationId,contactId,addressId);
+    }
+
+    @GetMapping("/contacts/{contact_id}/refunds")
+    public Object refunds(HttpServletRequest request, @RequestParam("organization_id") String organizationId, @PathVariable("contact_id") String contactId){
+        return zohoContactService.refunds(request.getHeader("Authorization").substring(16),organizationId,contactId);
+    }
+
+    @PostMapping("/contacts/{contact_id}/track1099")
+    public Object track1099(HttpServletRequest request, @RequestParam("organization_id") String organizationId, @PathVariable("contact_id") String contactId){
+        return zohoContactService.track1099(request.getHeader("Authorization").substring(16),organizationId,contactId);
+    }
+    @PostMapping("/contacts/{contact_id}/untrack1099")
+    public Object untrack1099(HttpServletRequest request, @RequestParam("organization_id") String organizationId, @PathVariable("contact_id") String contactId){
+        return zohoContactService.untrack1099(request.getHeader("Authorization").substring(16),organizationId,contactId);
+    }
+
+
 
 }

@@ -35,4 +35,12 @@ public interface ZohoContactService {
     public Object getContactAddress(String accessToken, String organizationId, String contact_id);
 
     public Object editAdditionalAddress(String accessToken, String organizationId, String contact_id,String addressId,AdditionalAddress additionalAddress);
+
+    public Object deleteAdditionalAddress(String accessToken, String organizationId, String contact_id,String addressId);
+    public Object refunds(String accessToken, String organizationId, String contactId);
+
+    public Object track1099(String accessToken, String organizationId, String contactId);
+    public Object untrack1099(String accessToken, String organizationId, String contactId);
+
+
 }
