@@ -3,6 +3,7 @@ package com.zoho.client.api.service.contact;
 import com.zoho.client.api.dto.contact.CreateContactRequest;
 import com.zoho.client.api.dto.contact.EmailStatement;
 import com.zoho.client.api.dto.contact.EnablePortalAccessRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,4 +27,8 @@ public interface ZohoContactService {
     public Object emailStatement(String accessToken, String organizationId, String contact_id, EmailStatement emailStatement);
 
     public Object getStatementMailContent(String accessToken, String organizationId, String contact_id);
+
+    public Object emailContact(String accessToken, String organizationId, String contact_id, String[] toMailIds, String subject, String body, MultipartFile file);
+
+    public Object listComments(String accessToken, String organizationId, String contact_id);
 }

@@ -7,6 +7,7 @@ import com.zoho.client.api.service.contact.ZohoContactService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -84,8 +85,19 @@ public class ZohoContactController {
         return zohoContactService.getStatementMailContent(request.getHeader("Authorization").substring(16),organizationId,contactId);
     }
 
+    @PostMapping("/contacts/{contact_id}/email")
+    public Object emailContact(HttpServletRequest request,
+                               @PathVariable("contact_id") String contactId,
+                               @RequestParam(name="organization_id",required = true) String organizationId,
+                               @RequestParam(name="to_mail_ids",required = true) String[] toMailIds,
+                               @RequestParam(name="subject",required = true) String subject,
+                               @RequestParam(name="body",required = true) String body,
+                               @RequestParam("file") MultipartFile attachments){
+        return zohoContactService.emailContact(request.getHeader("Authorization").substring(16),organizationId,contactId,toMailIds,subject,body,attachments);
+    }
 
-
-
-
+    @GetMapping("/contacts/{contact_id}/comments")
+    public Object listComments(HttpServletRequest request,@PathVariable("contact_id") String contactId,@RequestParam("organization_id") String organizationId){
+        return zohoContactService.listComments(request.getHeader("Authorization").substring(16),organizationId,contactId);
+    }
 }

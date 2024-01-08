@@ -9,8 +9,10 @@ import com.zoho.client.api.utility.ZohoUtilityProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -168,6 +170,40 @@ public class ZohoContactServiceImpl implements ZohoContactService {
         Map<String,String> queryParams = new HashMap<>();
         queryParams.put("organization_id",organizationId);
         String url = ZohoUtilityProvider.buildUrlWithQueryParams(resourceServerBaseUrl+"/contacts/"+contact_id+"/statements/email",queryParams);
+        HttpEntity<Object> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<Object> responseEntity = restTemplateHandler.performHttpRequest(url,HttpMethod.GET,requestEntity);
+        return responseEntity.getBody();
+    }
+
+    @Override
+    public Object emailContact(String accessToken, String organizationId, String contact_id, String[] toMailIds, String subject, String body, MultipartFile file) {
+
+        HttpHeaders headers = ZohoUtilityProvider.getHttpHeaders(accessToken);
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        Map<String,String> queryParams = new HashMap<>();
+        queryParams.put("organization_id",organizationId);
+
+        Map<String, Object> bodyMap = new HashMap<>();
+        bodyMap.put("attachments", file);
+        bodyMap.put("to_mail_ids", Arrays.asList(toMailIds));
+        bodyMap.put("subject", subject);
+        bodyMap.put("body", body);
+
+
+        String url = ZohoUtilityProvider.buildUrlWithQueryParams(resourceServerBaseUrl+"/contacts/"+contact_id+"/email",queryParams);
+        HttpEntity<Object> requestEntity = new HttpEntity<>(bodyMap,headers);
+        ResponseEntity<Object> responseEntity = restTemplateHandler.performHttpRequest(url,HttpMethod.GET,requestEntity);
+        return responseEntity.getBody();
+
+    }
+
+    @Override
+    public Object listComments(String accessToken, String organizationId, String contact_id) {
+        HttpHeaders headers = ZohoUtilityProvider.getHttpHeaders(accessToken);
+        Map<String,String> queryParams = new HashMap<>();
+        queryParams.put("organization_id",organizationId);
+        String url = ZohoUtilityProvider.buildUrlWithQueryParams(resourceServerBaseUrl+"/contacts/"+contact_id+"/comments",queryParams);
         HttpEntity<Object> requestEntity = new HttpEntity<>(headers);
         ResponseEntity<Object> responseEntity = restTemplateHandler.performHttpRequest(url,HttpMethod.GET,requestEntity);
         return responseEntity.getBody();
