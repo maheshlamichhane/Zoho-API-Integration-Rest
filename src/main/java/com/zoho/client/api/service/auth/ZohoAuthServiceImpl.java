@@ -1,5 +1,7 @@
 package com.zoho.client.api.service.auth;
 
+import com.zoho.client.api.utility.RestTemplateHandler;
+import com.zoho.client.api.utility.ZohoUtilityProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -12,6 +14,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.zoho.client.api.dto.auth.ZohoTokenResponse;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class ZohoAuthServiceImpl implements ZohoAuthService {
@@ -26,34 +31,50 @@ public class ZohoAuthServiceImpl implements ZohoAuthService {
 	private String redirectUri;
 
 
+	@Value("${zoho.oauth-server.scope}")
+	private String scope;
+
+	@Value("${zoho.oauth-server.state}")
+	private String state;
+
 	@Value("${zoho.oauth-server.base-url}")
-	private String baseUrl;
+	private String authServerBaseUrl;
 
-	private final RestTemplate restTemplate;
 
-	public ZohoAuthServiceImpl(RestTemplate restTemplate) {
-		this.restTemplate = restTemplate;
+	private final RestTemplateHandler restTemplateHandler;
+
+	public ZohoAuthServiceImpl(RestTemplateHandler restTemplateHandler) {
+		this.restTemplateHandler = restTemplateHandler;
 	}
 
 	@Override
-	public ZohoTokenResponse generateAccessToken(String authorizationCode) {
+	public String generateAuthorizationCode() {
+		Map<String, String> queryParams = new HashMap<>();
+		queryParams.put("scope",scope);
+		queryParams.put("client_id", clientId);
+		queryParams.put("state", state);
+		queryParams.put("response_type", "code");
+		queryParams.put("redirect_uri", redirectUri);
+		queryParams.put("access_type", "offline");
+		queryParams.put("prompt", "consent");
+		return ZohoUtilityProvider.buildUrlWithQueryParams(authServerBaseUrl+"/v2/auth",queryParams);
+	}
 
-		MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
-		requestBody.add("code",authorizationCode);
-		requestBody.add("client_id", clientId);
-		requestBody.add("client_secret", clientSecret);
-		requestBody.add("redirect_uri", redirectUri);
-		requestBody.add("grant_type", "authorization_code");
+	@Override
+	public Object generateAccessToken(String authorizationCode) {
 
+		MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+		queryParams.add("code",authorizationCode);
+		queryParams.add("client_id", clientId);
+		queryParams.add("client_secret", clientSecret);
+		queryParams.add("redirect_uri", redirectUri);
+		queryParams.add("grant_type", "authorization_code");
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-		HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
-
-		ResponseEntity<ZohoTokenResponse> responseEntity = restTemplate.exchange(baseUrl+"/v2/token", HttpMethod.POST,
-				requestEntity, ZohoTokenResponse.class);
-
+		HttpEntity<Object> requestEntity = new HttpEntity<>(queryParams, headers);
+		ResponseEntity<Object> responseEntity = restTemplateHandler.performHttpRequest(authServerBaseUrl+"/v2/token", HttpMethod.POST,
+				requestEntity);
 		if (responseEntity.getStatusCode().is2xxSuccessful()) {
 			return responseEntity.getBody();
 		} else {
@@ -61,4 +82,44 @@ public class ZohoAuthServiceImpl implements ZohoAuthService {
 		}
 	}
 
+	@Override
+	public Object getAccessTokenFromRefreshToken(String refreshToken) {
+
+		MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+		queryParams.add("refresh_token",refreshToken);
+		queryParams.add("client_id", clientId);
+		queryParams.add("client_secret", clientSecret);
+		queryParams.add("redirect_uri", redirectUri);
+		queryParams.add("grant_type", "refresh_token");
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+		HttpEntity<Object> requestEntity = new HttpEntity<>(queryParams, headers);
+		ResponseEntity<Object> responseEntity = restTemplateHandler.performHttpRequest(authServerBaseUrl+"/v2/token", HttpMethod.POST,
+				requestEntity);
+		if (responseEntity.getStatusCode().is2xxSuccessful()) {
+			return responseEntity.getBody();
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public Object refreshRevokeToken(String accessToken) {
+		MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+		queryParams.add("token",accessToken);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+		HttpEntity<Object> requestEntity = new HttpEntity<>(queryParams, headers);
+		ResponseEntity<Object> responseEntity = restTemplateHandler.performHttpRequest(authServerBaseUrl+"/v2/token/revoke", HttpMethod.POST,
+				requestEntity);
+		if (responseEntity.getStatusCode().is2xxSuccessful()) {
+			return responseEntity.getBody();
+		} else {
+			return null;
+		}
+	}
 }

@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class ZohoTokenResponse {
     private String access_token;
+    private String refresh_token;
     private String scope;
     private String api_domain;
     private String token_type;

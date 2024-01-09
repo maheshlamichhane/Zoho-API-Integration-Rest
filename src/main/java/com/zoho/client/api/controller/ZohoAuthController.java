@@ -7,25 +7,13 @@ import org.springframework.web.bind.annotation.*;
 
 import com.zoho.client.api.dto.auth.ZohoTokenResponse;
 import com.zoho.client.api.service.auth.ZohoAuthService;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/zoho")
 public class ZohoAuthController {
-
-    @Value("${zoho.oauth-server.scope}")
-    private String scope;
-
-    @Value("${zoho.oauth-server.base-url}")
-    private String oauthServerBaseUrl;
-
-    @Value("${zoho.oauth-server.redirect-uri}")
-    private String redirectUri;
-
-    @Value("${zoho.oauth-server.client-id}")
-    private String clientId;
 
     private final ZohoAuthService zohoAuthService;
 
@@ -34,25 +22,26 @@ public class ZohoAuthController {
     }
 
     @GetMapping("/login")
-    public void redirectToZoho(HttpServletResponse response) {
-        String zohoUrl = oauthServerBaseUrl+"/v2/auth"+
-                "?scope="+scope+
-                "&client_id="+clientId+
-                "&state=testing"+
-                "&response_type=code" +
-                "&redirect_uri="+redirectUri+
-                "&access_type=offline";
-        try{
-            response.sendRedirect(zohoUrl);
-        }
-        catch(IOException e){
-            throw new ZohoException(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+    public RedirectView login() {
+        String authorizationUrl = zohoAuthService.generateAuthorizationCode();
+        return new RedirectView(authorizationUrl);
     }
 
     @PostMapping("/token")
-    public ZohoTokenResponse getToken(@RequestParam("authorizationCode") String authorizationCode){
+    public Object getToken(@RequestParam("authorizationCode") String authorizationCode){
         return zohoAuthService.generateAccessToken(authorizationCode);
     }
+
+    @PostMapping("/refreshToken")
+    public Object getAccessTokenFromRefreshToken(@RequestParam("refresh_token") String refreshToken){
+        return zohoAuthService.getAccessTokenFromRefreshToken(refreshToken);
+    }
+
+    @PostMapping("/revokeRefreshToken")
+    public Object refreshRevokeToken(@RequestParam("token") String accessToken){
+        return zohoAuthService.refreshRevokeToken(accessToken);
+    }
+
+
 
 }
