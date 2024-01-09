@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Tag{
-    public String tag_id;
-    public String tag_option_id;
+    private String tag_id;
+    private String tag_option_id;
 }

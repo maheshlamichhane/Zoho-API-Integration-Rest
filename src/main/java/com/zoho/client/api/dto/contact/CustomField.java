@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CustomField{
-    public Integer index;
-    public String value;
+    private Integer index;
+    private String value;
 }

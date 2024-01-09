@@ -2,6 +2,7 @@ package com.zoho.client.api.service.auth;
 
 import com.zoho.client.api.utility.RestTemplateHandler;
 import com.zoho.client.api.utility.ZohoUtilityProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -12,8 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
-import com.zoho.client.api.dto.auth.ZohoTokenResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +38,9 @@ public class ZohoAuthServiceImpl implements ZohoAuthService {
 
 	@Value("${zoho.oauth-server.base-url}")
 	private String authServerBaseUrl;
+
+	@Autowired
+	private RestTemplate restTemplate;
 
 
 	private final RestTemplateHandler restTemplateHandler;
@@ -106,16 +108,18 @@ public class ZohoAuthServiceImpl implements ZohoAuthService {
 	}
 
 	@Override
-	public Object refreshRevokeToken(String accessToken) {
-		MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-		queryParams.add("token",accessToken);
-
+	public Object refreshRevokeToken(String refreshToken) {
+		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+		formData.add("token", refreshToken);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		HttpEntity<Object> requestEntity = new HttpEntity<>(formData, headers);
 
-		HttpEntity<Object> requestEntity = new HttpEntity<>(queryParams, headers);
-		ResponseEntity<Object> responseEntity = restTemplateHandler.performHttpRequest(authServerBaseUrl+"/v2/token/revoke", HttpMethod.POST,
-				requestEntity);
+		ResponseEntity<String> responseEntity = restTemplate.exchange(
+				authServerBaseUrl + "/v2/token/revoke",
+				HttpMethod.POST,
+				requestEntity,String.class);
+
 		if (responseEntity.getStatusCode().is2xxSuccessful()) {
 			return responseEntity.getBody();
 		} else {

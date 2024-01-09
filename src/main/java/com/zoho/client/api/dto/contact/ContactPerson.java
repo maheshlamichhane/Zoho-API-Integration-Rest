@@ -8,17 +8,17 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 public class ContactPerson{
-    public String salutation;
+    private String salutation;
     @Size(max = 100, message = "First name length must be at most 200")
-    public String first_name;
+    private String first_name;
     @Size(max = 100, message = "First name length must be at most 200")
-    public String last_name;
-    public String email;
-    public String phone;
-    public String mobile;
-    public String designation;
-    public String department;
-    public String skype;
-    public Boolean is_primary_contact;
-    public Boolean enable_portal;
+    private String last_name;
+    private String email;
+    private String phone;
+    private String mobile;
+    private String designation;
+    private String department;
+    private String skype;
+    private Boolean is_primary_contact;
+    private Boolean enable_portal;
 }

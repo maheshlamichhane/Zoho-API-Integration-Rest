@@ -9,17 +9,17 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 public class BillingAddress{
-    public String attention;
+    private String attention;
     @Size(max=500,message = "Address can have upto 500 characters")
-    public String address;
-    public String street2;
-    public String state_code;
-    public String city;
-    public String state;
-    public String zip;
-    public String country;
-    public String fax;
-    public String phone;
+    private String address;
+    private String street2;
+    private String state_code;
+    private String city;
+    private String state;
+    private String zip;
+    private String country;
+    private String fax;
+    private String phone;
 }
 
 

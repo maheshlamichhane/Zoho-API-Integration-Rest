@@ -1,6 +1,5 @@
 package com.zoho.client.api.security;
 
-import com.zoho.client.api.exception.ZohoException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 

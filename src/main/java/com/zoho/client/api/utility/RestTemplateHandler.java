@@ -12,8 +12,6 @@ import java.util.Map;
 @Component
 public class RestTemplateHandler {
 
-    @Value("${zoho.resource-server.base-url}")
-    private String resourceServerBaseUrl;
 
     private final RestTemplate restTemplate;
 

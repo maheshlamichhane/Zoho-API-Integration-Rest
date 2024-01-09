@@ -8,12 +8,12 @@ import java.util.ArrayList;
 @Getter
 @Setter
 public class PageContext{
-    public Integer page;
-    public Integer per_page;
-    public Boolean has_more_page;
-    public String report_name;
-    public String applied_filter;
-    public ArrayList<Object> custom_fields;
-    public String sort_column;
-    public String sort_order;
+    private Integer page;
+    private Integer per_page;
+    private Boolean has_more_page;
+    private String report_name;
+    private String applied_filter;
+    private ArrayList<Object> custom_fields;
+    private String sort_column;
+    private String sort_order;
 }
