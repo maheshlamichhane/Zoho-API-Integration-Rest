@@ -15,18 +15,18 @@ public class ZohoAuthController {
         this.zohoAuthService = zohoAuthService;
     }
 
-    @GetMapping("/login")
+    @GetMapping("/oauth/v2/auth")
     public RedirectView login() {
         String authorizationUrl = zohoAuthService.generateAuthorizationCode();
         return new RedirectView(authorizationUrl);
     }
 
-    @PostMapping("/token")
-    public Object getToken(@RequestParam("authorizationCode") String authorizationCode){
+    @PostMapping("/oauth/v2/token")
+    public Object getToken(@RequestParam("authorization_code") String authorizationCode){
         return zohoAuthService.generateAccessToken(authorizationCode);
     }
 
-    @PostMapping("/refreshToken")
+    @PostMapping("/oauth/v2/refreshToken")
     public Object getAccessTokenFromRefreshToken(@RequestParam("refresh_token") String refreshToken){
         return zohoAuthService.getAccessTokenFromRefreshToken(refreshToken);
     }
@@ -35,7 +35,5 @@ public class ZohoAuthController {
     public Object refreshRevokeToken(@RequestParam("token") String refreshToken){
         return zohoAuthService.refreshRevokeToken(refreshToken);
     }
-
-
 
 }

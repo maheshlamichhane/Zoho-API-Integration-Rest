@@ -10,8 +10,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-@RequestMapping("/books/v3")
+
 @RestController
+@RequestMapping("/books/v3")
 public class ZohoContactController {
     private final ZohoContactService zohoContactService;
 
@@ -86,11 +87,11 @@ public class ZohoContactController {
     @PostMapping("/contacts/{contact_id}/email")
     public Object emailContact(HttpServletRequest request,
                                @PathVariable("contact_id") String contactId,
-                               @RequestParam(name="organization_id",required = true) String organizationId,
-                               @RequestParam(name="to_mail_ids",required = true) String[] toMailIds,
-                               @RequestParam(name="subject",required = true) String subject,
-                               @RequestParam(name="body",required = true) String body,
-                               @RequestParam("file") MultipartFile attachments){
+                               @RequestParam("organization_id") String organizationId,
+                               @RequestParam("to_mail_ids") String[] toMailIds,
+                               @RequestParam("subject") String subject,
+                               @RequestParam("body") String body,
+                               @RequestParam(name="attachments",required = false) MultipartFile attachments){
         return zohoContactService.emailContact(request.getHeader("Authorization").substring(16),organizationId,contactId,toMailIds,subject,body,attachments);
     }
 
@@ -127,11 +128,10 @@ public class ZohoContactController {
     public Object track1099(HttpServletRequest request, @RequestParam("organization_id") String organizationId, @PathVariable("contact_id") String contactId){
         return zohoContactService.track1099(request.getHeader("Authorization").substring(16),organizationId,contactId);
     }
+
     @PostMapping("/contacts/{contact_id}/untrack1099")
     public Object untrack1099(HttpServletRequest request, @RequestParam("organization_id") String organizationId, @PathVariable("contact_id") String contactId){
         return zohoContactService.untrack1099(request.getHeader("Authorization").substring(16),organizationId,contactId);
     }
-
-
 
 }

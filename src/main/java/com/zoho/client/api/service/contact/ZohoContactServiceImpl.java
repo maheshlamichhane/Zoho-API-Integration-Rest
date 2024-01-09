@@ -4,15 +4,16 @@ import com.zoho.client.api.dto.contact.*;
 import com.zoho.client.api.exception.ZohoException;
 import com.zoho.client.api.utility.RestTemplateHandler;
 import com.zoho.client.api.utility.ZohoUtilityProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 
 @Service
@@ -20,6 +21,9 @@ public class ZohoContactServiceImpl implements ZohoContactService {
 
     @Value("${zoho.resource-server.base-url}")
     private String resourceServerBaseUrl;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     private final RestTemplateHandler restTemplateHandler;
 
@@ -174,26 +178,30 @@ public class ZohoContactServiceImpl implements ZohoContactService {
     }
 
     @Override
-    public Object emailContact(String accessToken, String organizationId, String contact_id, String[] toMailIds, String subject, String body, MultipartFile file) {
+    public Object emailContact(String accessToken, String organizationId, String contact_id, String[] toMailIds, String subject, String body, MultipartFile attachments) {
 
         HttpHeaders headers = ZohoUtilityProvider.getHttpHeaders(accessToken);
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        Map<String,String> queryParams = new HashMap<>();
-        queryParams.put("organization_id",organizationId);
+        Map<String, Object> requestBody = new LinkedHashMap<>();
+        requestBody.put("to_mail_ids", Arrays.asList(toMailIds));
+        requestBody.put("subject", subject);
+        requestBody.put("body", body);
 
-        Map<String, Object> bodyMap = new HashMap<>();
-        bodyMap.put("attachments", file);
-        bodyMap.put("to_mail_ids", Arrays.asList(toMailIds));
-        bodyMap.put("subject", subject);
-        bodyMap.put("body", body);
+        if (attachments != null && !attachments.isEmpty()) {
+            try {
+                byte[] fileBytes = attachments.getBytes();
+                String encodedFile = Base64.getEncoder().encodeToString(fileBytes);
+                requestBody.put("attachments", encodedFile);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
-
-        String url = ZohoUtilityProvider.buildUrlWithQueryParams(resourceServerBaseUrl+"/contacts/"+contact_id+"/email",queryParams);
-        HttpEntity<Object> requestEntity = new HttpEntity<>(bodyMap,headers);
-        ResponseEntity<Object> responseEntity = restTemplateHandler.performHttpRequest(url,HttpMethod.GET,requestEntity);
+        String url = ZohoUtilityProvider.buildUrlWithQueryParams(resourceServerBaseUrl + "/contacts/" + contact_id + "/email", Collections.singletonMap("organization_id", organizationId));
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+        ResponseEntity<Object> responseEntity = restTemplate.exchange(url,HttpMethod.POST,requestEntity,Object.class);
         return responseEntity.getBody();
-
     }
 
     @Override
