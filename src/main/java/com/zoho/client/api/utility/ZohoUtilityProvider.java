@@ -3,16 +3,21 @@ package com.zoho.client.api.utility;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zoho.client.api.exception.ZohoException;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
+import java.util.Base64;
 import java.util.Map;
 
 
 public class ZohoUtilityProvider {
 
 	public static HttpHeaders getHttpHeaders(String accessToken){
-		org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", "Zoho-oauthtoken " + accessToken);
 		return headers;
 	}
@@ -33,8 +38,20 @@ public class ZohoUtilityProvider {
 		try {
 			return objectMapper.writeValueAsString(request);
 		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+			throw new ZohoException(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
-		return "";
+	}
+
+	public static String convertMultipartToBinary(MultipartFile attachments){
+		String encodedFile = "";
+		if (attachments != null && !attachments.isEmpty()) {
+			try {
+				byte[] fileBytes = attachments.getBytes();
+				encodedFile = Base64.getEncoder().encodeToString(fileBytes);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		return encodedFile;
 	}
 }
