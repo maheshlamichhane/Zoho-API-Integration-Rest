@@ -3,6 +3,7 @@ package com.zoho.client.api.utility;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zoho.client.api.exception.ZohoError;
 import com.zoho.client.api.exception.ZohoException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -38,7 +39,7 @@ public class ZohoUtilityProvider {
 		try {
 			return objectMapper.writeValueAsString(request);
 		} catch (JsonProcessingException e) {
-			throw new ZohoException(e.getMessage(), HttpStatus.BAD_REQUEST);
+			throw new ZohoException(e.getMessage(), HttpStatus.BAD_REQUEST.value());
 		}
 	}
 
@@ -53,5 +54,17 @@ public class ZohoUtilityProvider {
 			}
 		}
 		return encodedFile;
+	}
+
+	public static ZohoError convertErrorResponseToObject(String jsonString){
+		ObjectMapper objectMapper = new ObjectMapper();
+		ZohoError zohoError = null;
+		try{
+			zohoError = objectMapper.readValue(jsonString, ZohoError.class);
+		}
+		catch (Exception ee){
+			ee.printStackTrace();
+		}
+		return zohoError;
 	}
 }

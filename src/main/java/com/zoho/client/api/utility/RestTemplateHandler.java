@@ -1,12 +1,11 @@
 package com.zoho.client.api.utility;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zoho.client.api.exception.ZohoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -41,7 +40,6 @@ public class RestTemplateHandler {
         String url = ZohoUtilityProvider.buildUrlWithQueryParams(resourceServerBaseUrl + endpoint, queryParams);
         String jsonObj = ZohoUtilityProvider.convertToJsonWithNonNullFields(requestBody);
         HttpEntity<Object> requestEntity = new HttpEntity<>(jsonObj, headers);
-
         return restTemplate.exchange(url, method
                     , requestEntity, Object.class);
     }

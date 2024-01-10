@@ -147,7 +147,7 @@ public class ZohoContactServiceImpl implements ZohoContactService {
         for (String paramName : request.getParameterMap().keySet()) {
             String value = request.getParameter(paramName);
             if (value != null && value.length() > 100) {
-                throw new ZohoException("Maximum length exceeded for "+paramName,HttpStatus.BAD_REQUEST);
+                throw new ZohoException("Maximum length exceeded for "+paramName,HttpStatus.BAD_REQUEST.value());
             }
         }
     }

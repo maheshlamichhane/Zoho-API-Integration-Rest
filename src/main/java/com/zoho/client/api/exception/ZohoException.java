@@ -1,16 +1,18 @@
 package com.zoho.client.api.exception;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
 @Getter
+@Setter
 public class ZohoException extends RuntimeException {
-    private final HttpStatus status;
+    private final int code;
     public ZohoException(
             String message,
-            HttpStatus status) {
+            int code) {
         super(message);
-        this.status = status;
+        this.code = code;
     }
 
 }
